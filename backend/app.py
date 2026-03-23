@@ -21,13 +21,7 @@ from utils.nlp_model import generate_nlm_reply, translate_text
 from utils.db import init_db, add_message, get_recent_messages, clear_history
 
 app = Flask(__name__)
-CORS(
-    app,
-    resources={r"/*": {"origins": [
-        "http://localhost:3000",
-        "https://your-frontend.vercel.app",
-    ]}},
-)
+CORS(app)
 
 # Initialize DB
 init_db()
@@ -107,6 +101,7 @@ def get_wiki_summary(query: str):
             except:
                 continue
 
+
         # fallback
         title = results[0]
         summary = wikipedia.summary(title, sentences=3)
@@ -149,6 +144,22 @@ def analyze_trends(text: str):
         return f"Historical trends related: {values}. "
     except:
         return ""
+    
+def get_ml_prediction(temp, humidity):
+    try:
+        response = requests.post(
+            "http://127.0.0.1:8001/predict",   # ML API
+            json={
+                "temp": temp,
+                "humidity": humidity
+            },
+            timeout=5
+        )
+
+        return response.json()
+
+    except Exception as e:
+        return {"error": str(e)}
 
 
 def parse_who_name(q: str):
@@ -421,6 +432,24 @@ def api_message():
         "status": "success",
         "timestamp": datetime.now().isoformat()
     })
+
+@app.route("/ml/predict", methods=["POST"])
+def ml_predict():
+    try:
+        data = request.get_json() or {}
+
+        temp = data.get("temp")
+        humidity = data.get("humidity")
+
+        if temp is None or humidity is None:
+            return jsonify({"error": "temp and humidity required"}), 400
+
+        result = get_ml_prediction(temp, humidity)
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/api/history")

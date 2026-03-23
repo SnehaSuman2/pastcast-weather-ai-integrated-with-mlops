@@ -99,6 +99,8 @@ function App() {
       }
 
       const weatherData: WeatherData = await response.json();
+      const mlResult = await getMLPrediction(30, 70);
+      alert(`Prediction: ${mlResult?.prediction}`);
       setWeatherData(weatherData);
       setShowComparison(false);
     } catch (error) {
@@ -109,6 +111,25 @@ function App() {
       setIsLoading(false);
     }
   };
+
+  const getMLPrediction = async (temp: number, humidity: number) => {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/ml/predict', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ temp, humidity }),
+    });
+
+    const data = await response.json();
+    console.log("ML Prediction:", data);
+
+    return data;
+  } catch (error) {
+    console.error("ML error:", error);
+  }
+};
 
   const handleComparisonSubmit = async (locations: LocationInput[], startDate: string, endDate?: string, datasetMode?: 'IMD' | 'Global' | 'Combined') => {
     setIsLoading(true);
