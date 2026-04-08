@@ -32,4 +32,4 @@ __pycache__/
 
 # Env files (secrets)
 .env
-backend/.env
+backend/.envchat_memory.db

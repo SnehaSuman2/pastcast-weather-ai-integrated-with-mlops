@@ -6,13 +6,7 @@ import os
 
 print("🔥 Training started...")
 
-data = {
-    "temp": [30, 25, 20, 15],
-    "humidity": [70, 60, 80, 90],
-    "rain": [1, 0, 1, 1]
-}
-
-df = pd.DataFrame(data)
+df = pd.read_csv("../data/weather.csv")
 
 X = df[["temp", "humidity"]]
 y = df["rain"]
