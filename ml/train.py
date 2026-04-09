@@ -2,23 +2,47 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 import joblib
 import mlflow
+import mlflow.sklearn
 import os
+mlflow.set_tracking_uri("http://127.0.0.1:5001")
 
 print("🔥 Training started...")
 
+# Load dataset
 df = pd.read_csv("../data/weather.csv")
 
 X = df[["temp", "humidity"]]
 y = df["rain"]
 
 with mlflow.start_run():
-    model = RandomForestClassifier()
+
+    # Create model
+    model = RandomForestClassifier(n_estimators=100)
+
+    # ✅ Log parameters
+    mlflow.log_param("model_type", "RandomForest")
+    mlflow.log_param("n_estimators", 100)
+
+    # Train model
     model.fit(X, y)
 
+    # Calculate accuracy
     acc = model.score(X, y)
+
+    # ✅ Log metric
     mlflow.log_metric("accuracy", acc)
 
-    path = os.path.join(os.path.dirname(__file__), "model.pkl")
-    joblib.dump(model, path)
+    # ✅ Log model in MLflow
+    mlflow.sklearn.log_model(model, "model")
 
-    print("✅ Model saved at:", path)
+    # ✅ Model versioning (local storage)
+    model_dir = os.path.join(os.path.dirname(__file__), "models")
+    os.makedirs(model_dir, exist_ok=True)
+
+    existing_models = [f for f in os.listdir(model_dir) if f.startswith("model_v")]
+    version = len(existing_models) + 1
+
+    model_path = os.path.join(model_dir, f"model_v{version}.pkl")
+    joblib.dump(model, model_path)
+
+    print(f"✅ Model saved as version v{version}: {model_path}")
