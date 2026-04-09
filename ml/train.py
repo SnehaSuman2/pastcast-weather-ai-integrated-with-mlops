@@ -4,12 +4,16 @@ import joblib
 import mlflow
 import mlflow.sklearn
 import os
-mlflow.set_tracking_uri("http://127.0.0.1:5001")
+
+mlflow.set_tracking_uri("file:./mlruns")
 
 print("🔥 Training started...")
 
 # Load dataset
-df = pd.read_csv("data/weather.csv")
+current_dir = os.path.dirname(__file__)
+data_path = os.path.join(current_dir, "..", "data", "weather.csv")
+
+df = pd.read_csv(data_path)
 
 X = df[["temp", "humidity"]]
 y = df["rain"]
