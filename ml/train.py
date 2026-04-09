@@ -9,7 +9,7 @@ mlflow.set_tracking_uri("http://127.0.0.1:5001")
 print("🔥 Training started...")
 
 # Load dataset
-df = pd.read_csv("../data/weather.csv")
+df = pd.read_csv("data/weather.csv")
 
 X = df[["temp", "humidity"]]
 y = df["rain"]
