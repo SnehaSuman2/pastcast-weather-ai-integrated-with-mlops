@@ -33,3 +33,9 @@ __pycache__/
 # Env files (secrets)
 .env
 backend/.envchat_memory.db
+
+mlflow.db
+ml/mlartifacts/
+ml/models/
+chat_memory.db
+training.log
