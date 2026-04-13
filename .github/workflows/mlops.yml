@@ -21,6 +21,12 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+        - name: Install DVC
+        run: pip install dvc
+
+        - name: Pull dataset from DVC
+        run: dvc pull
+
       - name: Run training
         run: |
           python ml/train.py
