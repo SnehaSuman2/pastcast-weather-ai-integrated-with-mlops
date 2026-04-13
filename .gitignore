@@ -39,3 +39,5 @@ ml/mlartifacts/
 ml/models/
 chat_memory.db
 training.log
+dvc_storage/
+ml/logs.csv
