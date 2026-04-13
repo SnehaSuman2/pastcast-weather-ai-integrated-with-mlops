@@ -18,6 +18,8 @@ df = pd.read_csv(data_path)
 X = df[["temp", "humidity"]]
 y = df["rain"]
 
+mlflow.set_experiment("weather_prediction")
+
 with mlflow.start_run():
 
     # Create model
